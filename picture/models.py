@@ -15,7 +15,7 @@ class Picture(models.Model):
     image = models.ImageField(upload_to = '')
 
 
-class comment(models.Model):
+class Comment(models.Model):
     user = models.ForeignKey(to=User,on_delete=models.CASCADE)
     picture = models.ForeignKey(to=Picture,on_delete=models.CASCADE)    
     comment = models.TextField("댓글")
