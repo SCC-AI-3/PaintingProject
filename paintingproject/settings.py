@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#63tw50hs&$#bb9vicg*xa#b2ip!2q8dyzi(%f9$06ayrn%hw6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -31,19 +31,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'user',
-    'picture',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # for DRF
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'user',
+    'picture',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -145,4 +148,9 @@ REST_FRAMEWORK = {
     ]
 }
 
-AUTH_USER_MODEL = 'user.User'
+CORS_ALLOWED_ORIGINS = [
+    "https://localhost:8000",
+    "https://127.0.0.1:8000",
+]
+
+AUTH_USER_MODEL = 'user.User'  # 커스텀 유저모델 사용할 때 꼭 설정해주기.
