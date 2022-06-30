@@ -12,7 +12,7 @@ class Picture(models.Model):
     created_at = models.DateTimeField("작성일", auto_now_add=True)
     updated_at = models.DateTimeField("수정일", auto_now_add=True)
     category = models.ManyToManyField(Category)
-    image = models.ImageField(upload_to = '')
+    image = models.ImageField(upload_to='picture')
 
 
 class Comment(models.Model):
