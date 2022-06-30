@@ -7,12 +7,11 @@ from .models import Picture
 class PictureView(APIView):
 
     def get(self, request):
-
-        Picture_serializer = PictureSeiralizer(Picture, many=True).data
-        return Response({'products': Picture_serializer}, status=status.HTTP_200_OK)
+        picture = Picture.objects.all()
+        Picture_serializer = PictureSeiralizer(picture, many=True).data
+        return Response({'picture': Picture_serializer}, status=status.HTTP_200_OK)
 
     def post(self, request):
-
         request.data['user'] = request.user.id
         Picture_serializer = PictureSeiralizer(data=request.data)
         if Picture_serializer.is_valid():
