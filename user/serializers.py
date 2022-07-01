@@ -43,11 +43,11 @@ class UserSerializer(serializers.ModelSerializer):
                 # required : validator에서 해당 값의 필요 여부를 판단한다.
                 'required': False  # default : True
             },
-            'fullname': {
+            'birthday': {
                 # error_messages : 에러 메세지를 자유롭게 설정 할 수 있다.
                 'error_messages': {
                     # required : 값이 입력되지 않았을 때 보여지는 메세지
-                    'required': '이름을 입력해주세요.',
+                    'required': '생년월일을 입력해주세요.',
                 },
                 # required : validator에서 해당 값의 필요 여부를 판단한다.
                 'required': False  # default : True

@@ -1,3 +1,7 @@
+from user.jwt_claim_serializer import CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+#
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from rest_framework.response import Response
@@ -7,6 +11,20 @@ from user.serializers import UserSerializer
 
 
 # Create your views here.
+class OnlyAuthenticatedUserView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    # JWT 인증방식 클래스 지정하기
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        # token에서 인증된 user만 가져온다.
+        user = request.user
+        print(f"user 정보: {user}")
+        if not user:
+            return Response({"error": "접근권한이 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Accepted"})
+
+
 class UserView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -17,7 +35,6 @@ class UserView(APIView):
     # 회원가입
     def post(self, request):
         user_serializer = UserSerializer(data=request.data)
-
         if user_serializer.is_valid():
             user_serializer.save()
             # return redirect('login')
@@ -42,6 +59,10 @@ class UserInfoView(APIView):
         # serializer에 queryset을 인자로 줄 경우 many=True 옵션을 사용해야 한다.
         serialized_user_data = UserSerializer(user).data
         return Response(serialized_user_data, status=status.HTTP_200_OK)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 
 # class UserAPIView(APIView):
