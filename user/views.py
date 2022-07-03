@@ -33,13 +33,26 @@ class UserView(APIView):
 
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # 회원 정보 수정
-    def put(self, request):
-        return Response({"message": "put method!!"})
 
-    # 회원 탈퇴
+class UserAdjustView(APIView):  # 회원정보 수정 및 삭제
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def put(self, request):
+        user = request.user
+        user_serializer = UserSerializer(user, data=request.data, partial=True)
+
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request):
-        return Response({"message": "delete method!!"})
+        user = request.user
+        if user:
+            user.delete()
+            return Response({"message": "회원탈퇴 성공"}, status=status.HTTP_200_OK)
+        return Response({"message": "회원탈퇴 실패"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserInfoView(APIView):
@@ -65,5 +78,8 @@ class MyPageView(APIView):
         # token에서 인증된 user만 가져온다.
         user = request.user
         print(user)
-        print(UserSerializer(user).data)
-        return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+        if not user:
+            return Response({"error": "로그인을 해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+        user_data = UserSerializer(user).data
+        print(user_data)
+        return Response({'user_data': user_data}, status=status.HTTP_200_OK)

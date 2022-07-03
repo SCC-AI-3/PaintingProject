@@ -157,7 +157,7 @@ CORS_ALLOWED_ORIGINS = [
 AUTH_USER_MODEL = 'user.User'  # 커스텀 유저모델 사용할 때 꼭 설정해주기.
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
