@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Picture, Category, Comment
 from datetime import datetime
 from user.serializers import UserSerializer
+from django.utils import dateformat, timezone
+
 
 class CategorySeiralizer(serializers.ModelSerializer):
     class Meta:
@@ -9,17 +11,29 @@ class CategorySeiralizer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class commentSeiralizer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField(read_only=True)
+    created_at = serializers.SerializerMethodField()
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    def get_created_at(self, obj):
+        return dateformat.format(obj.created_at, 'y.m.d H시 i분')
+
     class Meta:
         model = Comment
         fields = "__all__"
 
+
 class PictureSeiralizer(serializers.ModelSerializer):
     image_path = serializers.SerializerMethodField(read_only=True)
-    def get_image_path(self,obj):
+
+    def get_image_path(self, obj):
         return 'http://127.0.0.1:8000'+obj.image.url
     username = serializers.SerializerMethodField(read_only=True)
-    def get_username(self,obj):
+
+    def get_username(self, obj):
         return obj.user.username
 
     # commentfile = commentSeiralizer()
@@ -43,5 +57,4 @@ class PictureSeiralizer(serializers.ModelSerializer):
 
     class Meta:
         model = Picture
-        fields = ["image", "description", "username","user","image_path"]
-
+        fields = ["image", "description", "username", "user", "image_path"]

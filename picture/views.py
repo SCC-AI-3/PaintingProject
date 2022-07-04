@@ -1,15 +1,17 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status, permissions
-from .serializers import PictureSeiralizer
-from .models import Picture
+from .serializers import PictureSeiralizer, CommentSerializer
+from .models import Picture, Comment
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from user.serializers import UserSerializer
+
 
 class PictureView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     # JWT 인증방식 클래스 지정하기
     authentication_classes = [JWTAuthentication]
+
     def get(self, request):
         picture = Picture.objects.all()
         Picture_data = PictureSeiralizer(picture, many=True).data
@@ -33,7 +35,8 @@ class PictureView(APIView):
         # 기본적인 사용 방법은 validator, creater와 다르지 않다.
         # update를 해줄 경우 obj, data(수정할 dict)를 입력한다.
         # partial=True로 설정해 주면 일부 필드만 입력해도 에러가 발생하지 않는다.
-        Picture_serializer = PictureSeiralizer(picture, data=request.data, partial=True)
+        Picture_serializer = PictureSeiralizer(
+            picture, data=request.data, partial=True)
         if Picture_serializer.is_valid():
             # validator를 통과했을 경우 데이터 저장
             Picture_serializer.save()

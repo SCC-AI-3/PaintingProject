@@ -15,4 +15,5 @@ urlpatterns = [
     path('delete/', UserAdjustView.as_view()),  # 회원탈퇴 url
     path('mypage/', MyPageView.as_view()),  # 마이페이지
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('detail/', views.CommentView.as_view()),
 ]
