@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Picture, Category, Comment
 from datetime import datetime
+from user.serializers import UserSerializer
 
 class CategorySeiralizer(serializers.ModelSerializer):
     class Meta:
@@ -13,16 +14,20 @@ class commentSeiralizer(serializers.ModelSerializer):
         model = Comment
         fields = "__all__"
 
-
 class PictureSeiralizer(serializers.ModelSerializer):
+    image_path = serializers.SerializerMethodField(read_only=True)
+    def get_image_path(self,obj):
+        return 'http://127.0.0.1:8000'+obj.image.url
+    username = serializers.SerializerMethodField(read_only=True)
+    def get_username(self,obj):
+        return obj.user.username
+
     # commentfile = commentSeiralizer()
     # Categoryfile = CategorySeiralizer()
     def create(self, validated_data):
         # User object 생성
-        today = datetime.today().strftime("%Y-%m-%d")
-
-        validated_data["description"] += f'{today}에 등록된 상품입니다.'
         picture = Picture(**validated_data)
+        print(picture)
         picture.save()
         return validated_data
 
@@ -38,4 +43,5 @@ class PictureSeiralizer(serializers.ModelSerializer):
 
     class Meta:
         model = Picture
-        fields = ["image", "description","user","title"]
+        fields = ["image", "description", "username","user","image_path"]
+
