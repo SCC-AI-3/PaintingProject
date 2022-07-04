@@ -38,4 +38,4 @@ class PictureSeiralizer(serializers.ModelSerializer):
 
     class Meta:
         model = Picture
-        fields = ["image", "description","user"]
+        fields = ["image", "description","user","title"]

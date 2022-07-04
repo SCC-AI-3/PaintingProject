@@ -13,7 +13,7 @@ class Picture(models.Model):
     updated_at = models.DateTimeField("수정일", auto_now_add=True)
     category = models.ManyToManyField(Category)
     image = models.ImageField(upload_to='picture')
-
+    title = models.CharField("타이틀")
 
 class Comment(models.Model):
     user = models.ForeignKey(to=User,on_delete=models.CASCADE)

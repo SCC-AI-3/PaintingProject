@@ -1,15 +1,21 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import status, permissions
 from .serializers import PictureSeiralizer
 from .models import Picture
+from rest_framework_simplejwt.authentication import JWTAuthentication
+import json
 
 class PictureView(APIView):
-
+    permission_classes = [permissions.IsAuthenticated]
+    # JWT 인증방식 클래스 지정하기
+    authentication_classes = [JWTAuthentication]
     def get(self, request):
         picture = Picture.objects.all()
-        Picture_serializer = PictureSeiralizer(picture, many=True).data
-        return Response({'picture': Picture_serializer}, status=status.HTTP_200_OK)
+        Picture_data = PictureSeiralizer(picture, many=True).data
+        # Picture_data = json.dumps(data)
+        print(Picture_data)
+        return Response({'Picture_data': Picture_data}, status=status.HTTP_200_OK)
 
     def post(self, request):
         request.data['user'] = request.user.id
