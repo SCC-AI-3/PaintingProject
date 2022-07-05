@@ -13,8 +13,6 @@ from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.views import APIView
 from user.serializers import UserSerializer
-from picture.serializers import CommentSerializer
-from picture.models import Picture, Comment
 
 
 # Create your views here.
@@ -81,45 +79,7 @@ class MyPageView(APIView):
         user = request.user
         print(user)
         if not user:
-            return Response({"error": "로그인을 해주세요."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"error": "로그인을 해주세요."}, status=status.HTTP_400_BAD_REQUEST)
         user_data = UserSerializer(user).data
         print(user_data)
         return Response({'user_data': user_data}, status=status.HTTP_200_OK)
-
-
-class CommentView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
-    # # JWT 인증방식 클래스 지정하기
-    # authentication_classes = [JWTAuthentication]
-
-    # def post(self, request, id):
-    # picture = Picture.objects.filter(id=id)
-    def get(self, request):
-
-        picture = Picture.objects.filter(id=5)  # 이거 게시글 아이디임
-        comments = Comment.objects.filter(picture__in=picture)
-        serialized_data = CommentSerializer(comments, many=True).data
-        return Response(serialized_data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        # user = request.user
-        # request.data["user"] = user.id
-        request.data["user"] = 2
-        # request.data["picture"] = id
-        request.data["picture"] = 2
-        comment_serializer = CommentSerializer(
-            data=request.data, context={"request": request})
-        if comment_serializer.is_valid():
-            comment_serializer.save()
-
-            return Response(comment_serializer.data, status=status.HTTP_200_OK)
-        return Response(comment_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, id):
-        user = request.user
-        comment = Comment.objects.get(id=id)
-        if comment.user_id == user.id:
-            comment.delete()
-            return Response({"msg": "댓글 삭제"}, status=status.HTTP_200_OK)
-
-        return Response({"msg": "권한 없음"}, status=status.HTTP_400_BAD_REQUEST)
